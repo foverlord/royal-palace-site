@@ -31,3 +31,33 @@ if (lb && holder) {
   lb.addEventListener('keydown', (e) => { if (e.key === 'ArrowRight') show(cur + 1); if (e.key === 'ArrowLeft') show(cur - 1); });
   lb.addEventListener('close', () => { document.documentElement.classList.remove('no-scroll'); opener?.focus(); });
 }
+// форма «Проверить дату»: текст для WhatsApp + подсветка подходящего зала
+const hallNames: Record<string, string> = { '60': 'малый зал (до 60 гостей)', '140': 'средний зал (до 140 гостей)', '500': 'большой зал (до 500 гостей)' };
+const hallEls = $$<HTMLElement>('[data-hall]');
+const today = new Date(); today.setMinutes(today.getMinutes() - today.getTimezoneOffset());
+const fmt = (v: string) => { const [y, m, d] = v.split('-'); return `${d}.${m}.${y}`; };
+$$<HTMLFormElement>('[data-book]').forEach((f) => {
+  const date = f.querySelector<HTMLInputElement>('[data-book-date]')!;
+  const guests = f.querySelector<HTMLInputElement>('[data-book-guests]')!;
+  const hint = f.querySelector<HTMLElement>('[data-book-hall]')!;
+  const go = f.querySelector<HTMLAnchorElement>('[data-book-go]')!;
+  date.min = today.toISOString().slice(0, 10);
+  const update = () => {
+    const n = Math.round(Number(guests.value));
+    const occ = f.querySelector<HTMLInputElement>('input[type=radio]:checked')?.value;
+    const fit = n > 0 ? hallEls.map((h) => Number(h.dataset.hall)).sort((a, b) => a - b).find((g) => n <= g) : undefined;
+    hallEls.forEach((h) => h.classList.toggle('is-fit', fit !== undefined && Number(h.dataset.hall) === fit));
+    if (n > 0) {
+      hint.hidden = false;
+      hint.textContent = fit ? `Подходит ${hallNames[String(fit)]}` : 'Больше 500 гостей: подскажем варианты в WhatsApp';
+    } else hint.hidden = true;
+    const parts = ['Здравствуйте! Пишу с сайта Royal Palace.'];
+    parts.push(date.value ? `Свободна ли дата ${fmt(date.value)}?` : 'Хочу проверить дату.');
+    if (n > 0) parts.push(`Гостей: ${n}.`);
+    if (occ) parts.push(`Повод: ${occ.toLowerCase()}.`);
+    if (fit) parts.push(`Подходит ${hallNames[String(fit)]}.`);
+    parts.push('Подскажите, пожалуйста, стоимость.');
+    go.href = `https://wa.me/${f.dataset.wa}?text=${encodeURIComponent(parts.join(' '))}`;
+  };
+  f.addEventListener('input', update); f.addEventListener('change', update);
+});

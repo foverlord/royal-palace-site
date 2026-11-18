@@ -1,0 +1,18 @@
+---
+import WaIcon from './WaIcon.astro';
+import { site, waUrl, occasions } from '../data';
+interface Props { id: string; dark?: boolean }
+const { id, dark = false } = Astro.props;
+---
+<form class:list={['book', { 'book--dark': dark }]} data-book data-wa={site.wa} aria-label="Проверить дату" onsubmit="return false">
+  <div class="book-row">
+    <label class="book-f"><span>Дата</span><input type="date" name="date" data-book-date /></label>
+    <label class="book-f"><span>Гостей</span><input type="number" name="guests" min="1" max="2000" inputmode="numeric" placeholder="например, 120" data-book-guests /></label>
+  </div>
+  <fieldset class="book-occ">
+    <legend>Повод</legend>
+    {occasions.map((o) => <label class="occ"><input type="radio" name={`occ-${id}`} value={o} /><span>{o}</span></label>)}
+  </fieldset>
+  <p class="book-hall" data-book-hall aria-live="polite" hidden></p>
+  <a class="btn btn-wa book-go" href={waUrl('Хочу проверить дату.')} target="_blank" rel="noopener" data-book-go data-goal={`wa_book_${id}`}><WaIcon /><span>Проверить дату в WhatsApp</span></a>
+</form>

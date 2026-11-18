@@ -1,9 +1,10 @@
 ---
 import Base from '../layouts/Base.astro';
 import WaIcon from '../components/WaIcon.astro';
+import BookForm from '../components/BookForm.astro';
 import { Image, getImage } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
-import { site, waUrl, halls, hallMsg, gallery, showCheck } from '../data';
+import { site, waUrl, halls, hallMsg, gallery, showCheck, showNewYear } from '../data';
 import crest from '../assets/crest.png';
 const all = import.meta.glob<{ default: ImageMetadata }>('../assets/photos/*.webp', { eager: true });
 const ph = (n: string) => all[`../assets/photos/${n}`].default;
@@ -31,10 +32,8 @@ const steps = [
         <h1 id="hero-h" class="kicker">Банкетный зал в Астане · Royal Palace</h1>
         <p class="hero-slogan">Эталон роскоши для&nbsp;вашего торжества</p>
         <p class="hero-lead">Три зала на 60, 140 и 500 гостей, белый дворец с колоннами на Айтматова, 58.</p>
-        <div class="hero-cta">
-          <a class="btn btn-wa" href={waUrl('Хочу проверить дату.')} target="_blank" rel="noopener" data-goal="wa_hero"><WaIcon /><span>Проверить дату</span></a>
-          <a class="btn btn-line" href={`tel:${site.phoneE164}`} data-goal="call_hero">Позвонить</a>
-        </div>
+        <BookForm id="hero" dark />
+        <p class="hero-call">Или позвоните: <a href={`tel:${site.phoneE164}`} data-goal="call_hero">{site.phoneDisplay}</a></p>
         <a class="trust" href={site.gis} target="_blank" rel="noopener"><b>{site.rating.value}</b><span>★★★★★</span><span>{site.rating.marks.toLocaleString('ru-RU')} оценок в 2ГИС</span></a>
       </div>
       <figure class="arch hero-ph">
@@ -55,12 +54,21 @@ const steps = [
         <p class="lead">Отдельное трёхэтажное здание в неоклассическом стиле: колонны, балконы и арочные окна. Гости приезжают к своему входу, а не через фуд-корт.</p>
         <ul class="facts">
           <li><b>3</b><span>этажа</span></li>
-          <li><b>P</b><span>парковка по&nbsp;периметру</span></li>
-          <li><b>58</b><span>Айтматова, Астана</span></li>
+          <li><b>500</b><span>гостей в&nbsp;большом зале</span></li>
+          <li class="facts-t"><span>Парковка по&nbsp;периметру</span></li>
         </ul>
       </div>
     </div>
   </section>
+
+  {showNewYear && (
+    <aside class="ny" aria-label="Новогодние корпоративы">
+      <div class="wrap ny-in">
+        <p><b>Открыта бронь на новогодние корпоративы.</b> Узнайте свободные даты декабря.</p>
+        <a class="btn btn-wa btn-sm" href={waUrl('Повод: Новый год. Какие даты в декабре свободны?')} target="_blank" rel="noopener" data-goal="wa_ny"><WaIcon /><span>Узнать даты</span></a>
+      </div>
+    </aside>
+  )}
 
   <!-- 3. Залы -->
   <section class="sec sec--ivory" id="zaly" aria-labelledby="zl-h">
@@ -71,7 +79,8 @@ const steps = [
       </div>
       <div class="halls">
         {halls.map((h) => (
-          <article class="hall" id={`hall-${h.id}`}>
+          <article class="hall" id={`hall-${h.id}`} data-hall={h.guests}>
+            <p class="hall-fit" aria-hidden="true">Подходит под ваше число гостей</p>
             <p class="hall-n"><span>до</span><b>{h.guests}</b><span>гостей</span></p>
             <h3>{h.name}</h3>
             <ul>{h.facts.map((f) => <li>{f}</li>)}</ul>
@@ -140,7 +149,7 @@ const steps = [
       <ol class="steps">
         {steps.map(([t, d], i) => <li><span class="step-n">{['I', 'II', 'III'][i]}</span><h3>{t}</h3><p>{d}</p></li>)}
       </ol>
-      <a class="btn btn-wa" href={waUrl('Хочу проверить дату.')} target="_blank" rel="noopener" data-goal="wa_steps"><WaIcon /><span>Проверить дату в WhatsApp</span></a>
+      <div class="steps-form"><BookForm id="steps" /></div>
     </div>
   </section>
 
