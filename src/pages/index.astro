@@ -1,0 +1,172 @@
+---
+import Base from '../layouts/Base.astro';
+import WaIcon from '../components/WaIcon.astro';
+import { Image, getImage } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import { site, waUrl, halls, hallMsg, gallery, showCheck } from '../data';
+import crest from '../assets/crest.png';
+const all = import.meta.glob<{ default: ImageMetadata }>('../assets/photos/*.webp', { eager: true });
+const ph = (n: string) => all[`../assets/photos/${n}`].default;
+const cap = (src: ImageMetadata, list: number[]) => { const l = list.filter((w) => w < src.width); return [...l, src.width]; };
+const hero = ph('p8.webp');
+const facade = ph('p2.webp');
+const lbList = await Promise.all(gallery.map(async (g) => {
+  const s = ph(g.src);
+  const f = await getImage({ src: s, width: Math.min(1600, s.width), format: 'webp', quality: 82 });
+  return { full: f.src, cap: g.cap };
+}));
+const steps = [
+  ['Напишите дату и число гостей', 'В WhatsApp или по телефону. Подскажем, какой зал свободен.'],
+  ['Посмотрите зал вживую', 'Приезжайте на Айтматова, 58: покажем зал, сервировку и экраны.'],
+  ['Забронируйте дату', 'Обсудим меню и детали праздника и закрепим за вами день.'],
+];
+---
+<Base title="Royal Palace — банкетный зал в Астане на 60, 140 и 500 гостей" description="Royal Palace на Айтматова, 58: большой зал до 500 гостей, средний до 140, малый до 60. Свадьбы, тои, юбилеи, корпоративы. Рейтинг 5 в 2ГИС.">
+
+  <!-- 1. Герой -->
+  <section class="hero dark" id="top" aria-labelledby="hero-h">
+    <Image src={crest} alt="" class="mark mark--hero" width={153} height={154} />
+    <div class="wrap hero-in">
+      <div class="hero-txt">
+        <h1 id="hero-h" class="kicker">Банкетный зал в Астане · Royal Palace</h1>
+        <p class="hero-slogan">Эталон роскоши для&nbsp;вашего торжества</p>
+        <p class="hero-lead">Три зала на 60, 140 и 500 гостей, белый дворец с колоннами на Айтматова, 58.</p>
+        <div class="hero-cta">
+          <a class="btn btn-wa" href={waUrl('Хочу проверить дату.')} target="_blank" rel="noopener" data-goal="wa_hero"><WaIcon /><span>Проверить дату</span></a>
+          <a class="btn btn-line" href={`tel:${site.phoneE164}`} data-goal="call_hero">Позвонить</a>
+        </div>
+        <a class="trust" href={site.gis} target="_blank" rel="noopener"><b>{site.rating.value}</b><span>★★★★★</span><span>{site.rating.marks.toLocaleString('ru-RU')} оценок в 2ГИС</span></a>
+      </div>
+      <figure class="arch hero-ph">
+        <Image src={hero} alt="Большой банкетный зал Royal Palace с люстрами и белым подиумом" widths={cap(hero, [480, 800])} sizes="(min-width: 1024px) 520px, 90vw" format="webp" quality={80} loading="eager" fetchpriority="high" />
+      </figure>
+    </div>
+  </section>
+
+  <!-- 2. Дворец -->
+  <section class="sec" id="dvorec" aria-labelledby="dv-h">
+    <div class="wrap dv">
+      <figure class="frame dv-ph">
+        <Image src={facade} alt="Фасад Royal Palace: белое здание с колоннами и балконами" widths={cap(facade, [480, 800])} sizes="(min-width: 1024px) 620px, 90vw" format="webp" quality={80} />
+      </figure>
+      <div class="dv-txt">
+        <p class="kicker">Дворец</p>
+        <h2 id="dv-h">Настоящий дворец, а&nbsp;не&nbsp;зал в&nbsp;торговом центре</h2>
+        <p class="lead">Отдельное трёхэтажное здание в неоклассическом стиле: колонны, балконы и арочные окна. Гости приезжают к своему входу, а не через фуд-корт.</p>
+        <ul class="facts">
+          <li><b>3</b><span>этажа</span></li>
+          <li><b>P</b><span>парковка по&nbsp;периметру</span></li>
+          <li><b>58</b><span>Айтматова, Астана</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. Залы -->
+  <section class="sec sec--ivory" id="zaly" aria-labelledby="zl-h">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="kicker">Залы</p>
+        <h2 id="zl-h">Выберите зал под число гостей</h2>
+      </div>
+      <div class="halls">
+        {halls.map((h) => (
+          <article class="hall" id={`hall-${h.id}`}>
+            <p class="hall-n"><span>до</span><b>{h.guests}</b><span>гостей</span></p>
+            <h3>{h.name}</h3>
+            <ul>{h.facts.map((f) => <li>{f}</li>)}</ul>
+            <a class="btn btn-em" href={waUrl(hallMsg(h))} target="_blank" rel="noopener" data-goal={`wa_hall_${h.id}`}><WaIcon /><span>Узнать стоимость</span></a>
+          </article>
+        ))}
+      </div>
+      <p class="note">Цена зависит от даты, меню и числа гостей. Мы ответим в WhatsApp.</p>
+    </div>
+  </section>
+
+  <!-- 4. Кухня -->
+  <section class="sec" id="kuhnya" aria-labelledby="kh-h">
+    <div class="wrap kh">
+      <div class="kh-txt">
+        <p class="kicker">Кухня и меню</p>
+        <h2 id="kh-h">Европейская, казахская и восточная кухня</h2>
+        <p class="lead">Меню разрабатывает бренд-шеф. Для малого зала можно выбрать фуршет.</p>
+        {showCheck && <p class="check"><b>10–50 тыс ₸</b><span>средний чек на гостя</span></p>}
+        <a class="btn btn-em" href={waUrl('Пришлите, пожалуйста, меню.')} target="_blank" rel="noopener" data-goal="wa_menu"><WaIcon /><span>Запросить меню</span></a>
+      </div>
+      <div class="kh-ph">
+        {['p5.webp', 'p7.webp'].map((n, i) => { const s = ph(n); return (
+          <figure class="arch"><Image src={s} alt={i ? 'Пирожные и десерты на многоярусной подставке' : 'Фруктовая нарезка и бокалы на фуршетном столе'} widths={cap(s, [300, 480])} sizes="(min-width: 1024px) 280px, 44vw" format="webp" quality={80} /></figure>
+        ); })}
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. Атмосфера -->
+  <section class="sec dark" id="foto" aria-labelledby="ft-h">
+    <Image src={crest} alt="" class="mark mark--r" width={153} height={154} />
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="kicker">Атмосфера</p>
+        <h2 id="ft-h">Люстры, LED-экраны и&nbsp;световое шоу</h2>
+      </div>
+      <div class="gal" data-photos={JSON.stringify(lbList)}>
+        {gallery.map((g, i) => { const s = ph(g.src); return (
+          <button class="gal-i" type="button" data-gal={i} aria-label={`Открыть фото: ${g.cap}`}>
+            <Image src={s} alt={g.cap} widths={cap(s, [300, 540])} sizes="(min-width: 1024px) 380px, (min-width: 760px) 31vw, 92vw" format="webp" quality={78} />
+            <span>{g.cap}</span>
+          </button>
+        ); })}
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. Отзывы -->
+  <section class="sec" id="otzyvy" aria-labelledby="oz-h">
+    <div class="wrap rate">
+      <p class="kicker">Отзывы</p>
+      <h2 id="oz-h" class="rate-n">{site.rating.value}<span> из 5</span></h2>
+      <p class="lead">{site.rating.marks.toLocaleString('ru-RU')} оценок и {site.rating.reviews} отзывов в 2ГИС на 18.11.2026.</p>
+      <a class="btn btn-line-em" href={site.gis} target="_blank" rel="noopener" data-goal="gis_reviews">Читать отзывы в 2ГИС</a>
+    </div>
+  </section>
+
+  <!-- 7. Как забронировать -->
+  <section class="sec sec--ivory" id="bron" aria-labelledby="br-h">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="kicker">Бронирование</p>
+        <h2 id="br-h">Три шага до вашей даты</h2>
+      </div>
+      <ol class="steps">
+        {steps.map(([t, d], i) => <li><span class="step-n">{['I', 'II', 'III'][i]}</span><h3>{t}</h3><p>{d}</p></li>)}
+      </ol>
+      <a class="btn btn-wa" href={waUrl('Хочу проверить дату.')} target="_blank" rel="noopener" data-goal="wa_steps"><WaIcon /><span>Проверить дату в WhatsApp</span></a>
+    </div>
+  </section>
+
+  <!-- 8. Контакты -->
+  <section class="sec" id="kontakty" aria-labelledby="ct-h">
+    <div class="wrap ct">
+      <div>
+        <p class="kicker">Контакты</p>
+        <h2 id="ct-h">{site.address}</h2>
+        <p class="lead">Астана, отдельное здание Royal Palace. Часы работы и свободные даты подскажем по телефону.</p>
+        <p class="ct-ph"><a href={`tel:${site.phoneE164}`}>{site.phoneDisplay}</a></p>
+        <div class="hero-cta">
+          <a class="btn btn-wa" href={waUrl()} target="_blank" rel="noopener" data-goal="wa_contacts"><WaIcon /><span>WhatsApp</span></a>
+          <a class="btn btn-line-em" href={site.gis} target="_blank" rel="noopener" data-goal="route_contacts">Маршрут в 2ГИС</a>
+        </div>
+      </div>
+      <figure class="arch ct-ph-img">
+        <Image src={ph('p9.webp')} alt="Здание Royal Palace с вывеской и елями у входа" widths={cap(ph('p9.webp'), [320, 540])} sizes="(min-width: 1024px) 380px, 92vw" format="webp" quality={80} />
+      </figure>
+    </div>
+  </section>
+
+  <dialog class="lb" data-lb aria-label="Просмотр фото">
+    <button class="lb-b lb-x" type="button" data-lb-close aria-label="Закрыть">×</button>
+    <button class="lb-b lb-p" type="button" data-lb-step="-1" aria-label="Предыдущее фото">‹</button>
+    <figure><img data-lb-img alt="" /><figcaption><span data-lb-cap></span> <span data-lb-count></span></figcaption></figure>
+    <button class="lb-b lb-n" type="button" data-lb-step="1" aria-label="Следующее фото">›</button>
+  </dialog>
+</Base>

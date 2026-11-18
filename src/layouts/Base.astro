@@ -1,0 +1,72 @@
+---
+import '@fontsource/cormorant-garamond/cyrillic-500.css';
+import '@fontsource/cormorant-garamond/cyrillic-600.css';
+import '@fontsource/cormorant-garamond/latin-500.css';
+import '@fontsource/cormorant-garamond/latin-600.css';
+import '@fontsource/golos-text/400.css';
+import '@fontsource/golos-text/600.css';
+import '../styles/site.css';
+import { site, waUrl } from '../data';
+import WaIcon from '../components/WaIcon.astro';
+import { Image } from 'astro:assets';
+import logo from '../assets/logo.png';
+import crest from '../assets/crest.png';
+interface Props { title: string; description: string }
+const { title, description } = Astro.props;
+const canonical = new URL(Astro.url.pathname, site.origin).href;
+const ld = {
+  '@context': 'https://schema.org', '@type': 'EventVenue', name: site.name, url: site.origin, telephone: site.phoneE164,
+  address: { '@type': 'PostalAddress', streetAddress: site.address, addressLocality: site.city, addressCountry: 'KZ' },
+  aggregateRating: { '@type': 'AggregateRating', ratingValue: site.rating.num, ratingCount: site.rating.marks, reviewCount: site.rating.reviews, bestRating: 5 },
+  sameAs: [site.gis, site.instagram],
+};
+const nav = [['#dvorec', 'Дворец'], ['#zaly', 'Залы'], ['#kuhnya', 'Кухня'], ['#foto', 'Атмосфера'], ['#kontakty', 'Контакты']];
+---
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>{title}</title>
+  <meta name="description" content={description} />
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="canonical" href={canonical} />
+  <meta property="og:type" content="website" /><meta property="og:title" content={title} /><meta property="og:description" content={description} /><meta property="og:locale" content="ru_RU" />
+  <meta name="theme-color" content="#003219" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <script type="application/ld+json" set:html={JSON.stringify(ld)} />
+</head>
+<body>
+  <a class="skip" href="#main">К содержимому</a>
+  <header class="hdr" data-hdr>
+    <div class="wrap hdr-in">
+      <a class="logo" href="#top" aria-label="Royal Palace, на главную"><Image src={logo} alt="" width={44} height={44} class="logo-img" loading="eager" /><span class="logo-txt">Royal Palace</span></a>
+      <nav class="nav" aria-label="Разделы">{nav.map(([h, l]) => <a href={h}>{l}</a>)}</nav>
+      <a class="btn btn-wa btn-sm" href={waUrl()} target="_blank" rel="noopener" data-goal="wa_header"><WaIcon /><span>Написать</span></a>
+    </div>
+  </header>
+  <main id="main"><slot /></main>
+  <footer class="ftr dark">
+    <Image src={crest} alt="" class="mark" width={153} height={154} />
+    <div class="wrap ftr-in">
+      <div>
+        <p class="logo"><Image src={logo} alt="" width={56} height={56} class="logo-img" /><span class="logo-txt">Royal Palace</span></p>
+        <p class="ftr-muted">Банкетный зал в Астане. {site.address}.</p>
+      </div>
+      <ul class="ftr-links">
+        <li><a href={waUrl()} target="_blank" rel="noopener">WhatsApp</a></li>
+        <li><a href={`tel:${site.phoneE164}`}>{site.phoneDisplay}</a></li>
+        <li><a href={site.instagram} target="_blank" rel="noopener">Instagram {site.igHandle}</a></li>
+        <li><a href={site.gis} target="_blank" rel="noopener">Royal Palace в 2ГИС</a></li>
+      </ul>
+    </div>
+    <p class="wrap ftr-note">Демо-концепт сайта. Логотип и фотографии взяты из Instagram Royal Palace только для показа.</p>
+  </footer>
+  <nav class="bar" data-sticky aria-label="Быстрая связь">
+    <a class="bar-wa" href={waUrl()} target="_blank" rel="noopener" data-goal="wa_bar"><WaIcon /><span>WhatsApp</span></a>
+    <a class="bar-b" href={`tel:${site.phoneE164}`} data-goal="call_bar">Позвонить</a>
+    <a class="bar-b" href={site.gis} target="_blank" rel="noopener" data-goal="route_bar">Маршрут</a>
+  </nav>
+  <script>import '../scripts/main.ts';</script>
+</body>
+</html>
