@@ -160,3 +160,5 @@ figure { margin: 0 }
 .bar-b { border: 1.5px solid var(--gold); color: var(--cream) }
 @media (min-width: 900px) { .bar { display: none } }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto } *, *::before, *::after { transition: none !important } }
+.nw { white-space: nowrap }
+@media (max-width: 374px) { .hdr-wa { width: 44px; padding: 0 } .hdr-wa span { display: none } }

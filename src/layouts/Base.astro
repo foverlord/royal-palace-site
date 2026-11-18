@@ -42,7 +42,7 @@ const nav = [['#dvorec', 'Дворец'], ['#zaly', 'Залы'], ['#kuhnya', 'К
     <div class="wrap hdr-in">
       <a class="logo" href="#top" aria-label="Royal Palace, на главную"><Image src={logo} alt="" width={44} height={44} class="logo-img" loading="eager" /><span class="logo-txt">Royal Palace</span></a>
       <nav class="nav" aria-label="Разделы">{nav.map(([h, l]) => <a href={h}>{l}</a>)}</nav>
-      <a class="btn btn-wa btn-sm" href={waUrl()} target="_blank" rel="noopener" data-goal="wa_header"><WaIcon /><span>Написать</span></a>
+      <a class="btn btn-wa btn-sm hdr-wa" href={waUrl()} target="_blank" rel="noopener" data-goal="wa_header" aria-label="Написать в WhatsApp"><WaIcon /><span>Написать</span></a>
     </div>
   </header>
   <main id="main"><slot /></main>
