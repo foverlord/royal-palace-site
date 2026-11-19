@@ -80,7 +80,7 @@ const steps = [
       <div class="halls">
         {halls.map((h) => (
           <article class="hall" id={`hall-${h.id}`} data-hall={h.guests}>
-            <p class="hall-fit" aria-hidden="true">Подходит под ваше число гостей</p>
+            <p class="hall-fit">Подходит под ваше число гостей</p>
             <p class="hall-n"><span>до</span><b>{h.guests}</b><span>гостей</span></p>
             <h3>{h.name}</h3>
             <ul>{h.facts.map((f) => <li>{f}</li>)}</ul>

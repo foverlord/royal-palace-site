@@ -168,7 +168,7 @@ figure { margin: 0 }
 .book--dark { background: rgba(244, 240, 231, .05); border-color: rgba(184, 151, 90, .5) }
 .book-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px }
 .book-f { display: grid; gap: 6px; font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted) }
-.book--dark .book-f, .book--dark legend { color: rgba(244, 240, 231, .7) }
+.book--dark .book-f, .book--dark .book-occ legend { color: rgba(244, 240, 231, .7) }
 .book-f input { font: 400 16px/1.2 var(--body); min-height: 48px; padding: 0 12px; border: 1px solid var(--line); border-radius: 4px; background: #fff; color: var(--ink); width: 100%; min-width: 0; letter-spacing: 0; text-transform: none }
 .book--dark .book-f input { background: rgba(255, 255, 255, .08); border-color: rgba(184, 151, 90, .6); color: var(--cream); color-scheme: dark }
 .book-f input:focus { outline: 2px solid var(--gold); outline-offset: 1px }
@@ -193,8 +193,8 @@ figure { margin: 0 }
 .ny p { margin: 0 } .ny b { font: 600 22px/1.2 var(--head); color: var(--gold) }
 
 /* залы: подсветка и компактная арка */
-.hall-fit { position: absolute; top: -14px; left: 50%; transform: translateX(-50%); margin: 0; padding: 4px 12px; background: var(--gold); color: var(--emerald); font-size: 12px; font-weight: 600; border-radius: 999px; white-space: nowrap; opacity: 0; transition: opacity .2s }
+.hall-fit { position: absolute; top: -14px; left: 50%; transform: translateX(-50%); margin: 0; padding: 4px 12px; background: var(--gold); color: var(--emerald); font-size: 12px; font-weight: 600; border-radius: 999px; white-space: nowrap; opacity: 0; visibility: hidden; transition: opacity .2s }
 .hall { transition: border-color .2s, box-shadow .2s }
 .hall.is-fit { border-color: var(--gold); box-shadow: 0 0 0 2px var(--gold), 0 14px 30px rgba(0, 50, 25, .12) }
-.hall.is-fit .hall-fit { opacity: 1 }
+.hall.is-fit .hall-fit { opacity: 1; visibility: visible }
 .facts-t { align-content: end; font-size: 15px !important; color: var(--ink) !important }
